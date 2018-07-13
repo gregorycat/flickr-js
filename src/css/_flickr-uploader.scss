@@ -1,0 +1,27 @@
+///*------------------------------------*\
+//    #FLICKR-UPLOADER
+//\*------------------------------------*/
+
+//Flickr Uploader
+.flickr-uploader {
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    width : 600px;
+    padding: 0 !important;
+}
+
+
+    .flickr-upload__top {
+        flex: 1;
+        background-image: url('../assets/uploader-background.jpg');
+    }
+
+    .flickr-upload__actions {
+        padding: 16px;
+
+        .flick-uplad-action__add-folder {
+            width: 180px;
+            margin: auto;
+        }
+    }

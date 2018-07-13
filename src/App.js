@@ -1,22 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'typeface-montserrat';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import AppContent from './front/components/AppContent';
+import './css/flickr-js.scss';
 
+const theme = createMuiTheme({
+    typography: {
+        fontFamily: 'Montserrat,Roboto,"Helvetica Neue",Arial,sans-serif'
+    }
+});
 
 class App extends Component {
-  render() {
-    return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
-          </header>
-          <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
-          </p>
-        </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                <MuiThemeProvider theme={theme}>
+                    <AppBar position="static" color="default">
+                        <Toolbar>
+                            <IconButton color="inherit" aria-label="Menu">
+                                <MenuIcon />
+                            </IconButton>
+                            <Typography variant="title" color="inherit">
+                                FlickrJS
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+
+                    <AppContent/>
+                </MuiThemeProvider>
+            </div>
+        );
+    }
 }
 
 export default App;

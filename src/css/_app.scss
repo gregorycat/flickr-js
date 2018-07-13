@@ -1,0 +1,20 @@
+///*------------------------------------*\
+//    #GENERIC CLASSES
+//\*------------------------------------*/
+
+html {
+    height: 100%;
+    background-color: #DEE5E5;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+body,
+#root,
+.App {
+    height: 100%;
+}
