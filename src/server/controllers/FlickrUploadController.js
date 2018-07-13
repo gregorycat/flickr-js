@@ -118,15 +118,23 @@ module.exports = function(app) {
      * @param {Request} request The requested attributes
      */
     async function uploadMyPhotos(request) {
-        let photos = await uploadFolder(request.dirName, 'TEST');
+        let photos = await uploadFolder(request.dirName);
         createAlbum(photos, request.albumName);
-
     }
 
     /**
-     * Controller entry point to upload photos
+     * Controller entry point to upload folder of photos
      */
-    app.get('/api/flickr/upload', (req, res) => {
+    app.get('/api/flickr/upload-folder', (req, res) => {
         uploadMyPhotos(req);
+    });
+
+    /**
+     * Controller entry point to upload multiple photos
+     */
+    app.get('/api/flickr/upload-photos', (req, res) => {
+        /**
+         * TODO : implement call to flickr and function to upload via  a list of files (blob)
+         */
     });
 }
