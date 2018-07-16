@@ -98,10 +98,19 @@ module.exports = function(app) {
             config.FLICKR.OAUTH_TOKEN_SECRET,
         );
 
-        let photoName = photo.replace(/^.*[\\\/]/, '')
+        let photoName;
+        let photoToUpload;
+
+        if (photo instanceof String) {
+            photoToUpload = photo;
+            photoName = photo.replace(/^.*[\\\/]/, '')
+        } else {
+            photoName = photo.name;
+            photoToUpload = photo.data.buffer
+        }
 
         try {
-            return await new Flickr.Upload(auth, photo, {
+            return await new Flickr.Upload(auth, photoToUpload, {
                 title: photoName,
                 is_public: 0,
                 is_friend: 0,
@@ -117,24 +126,57 @@ module.exports = function(app) {
      *
      * @param {Request} request The requested attributes
      */
-    async function uploadMyPhotos(request) {
+    async function uploadFromFolder(request) {
         let photos = await uploadFolder(request.dirName);
         createAlbum(photos, request.albumName);
+    }
+
+    async function uploadFromFiles(request) {
+        let photos = await uploadFiles(request.files.image);
+        //createAlbum(photos, request.body.albumName);
+    }
+
+
+    /**
+     * Upload recieved multipart files to Flickr account.
+     *
+     * @param  {Multipat} files files to upload on Flickr.
+     * @return The list of upload photos id.
+     */
+    async function uploadFiles(files) {
+        let uploadedPics = []
+        console.log(files);
+        console.debug('DEBUG', 'Upload Photos [' + files.length + ']');
+        for (const photo of files) {
+            console.log(photo.data);
+
+            /* let result = await uploadPhoto(photo);
+            if (result) {
+                uploadedPics.push(result.body.photoid._content);
+                console.debug('DEBUG', 'Process..... ' + uploadedPics.length + '/' + files.length);
+            } */
+        }
+
+        console.log('DEBUG', 'Upload complete');
+
+        return uploadedPics;
+
     }
 
     /**
      * Controller entry point to upload folder of photos
      */
     app.get('/api/flickr/upload-folder', (req, res) => {
-        uploadMyPhotos(req);
+        uploadFromFolder(req);
     });
 
     /**
      * Controller entry point to upload multiple photos
      */
-    app.get('/api/flickr/upload-photos', (req, res) => {
+    app.post('/api/flickr/upload-photos', (req, res) => {
         /**
          * TODO : implement call to flickr and function to upload via  a list of files (blob)
          */
+        uploadFromFiles(req);
     });
 }

@@ -1,8 +1,12 @@
 const express = require('express');
 const pathUtils = require('path');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// default options
+app.use(fileUpload());
 
 
 const appDir = pathUtils.resolve(__dirname, '../../build');
