@@ -1,6 +1,6 @@
-const config = require('../config');
-const Flickr = require('flickr-sdk');
-const fs = require('fs');
+const config = require("../config");
+const Flickr = require("flickr-sdk");
+const fs = require("fs");
 
 module.exports = function(app) {
     /**
@@ -10,10 +10,10 @@ module.exports = function(app) {
      */
     function browseFolder(folder, photos) {
         fs.readdirSync(folder).forEach(file => {
-            if (fs.statSync(folder + '/' + file).isDirectory()){
-                browseFolder(folder + '/' + file, photos);
+            if (fs.statSync(folder + "/" + file).isDirectory()) {
+                browseFolder(folder + "/" + file, photos);
             } else {
-                photos.push(folder + '/' + file);
+                photos.push(folder + "/" + file);
             }
         });
 
@@ -31,34 +31,38 @@ module.exports = function(app) {
             return;
         }
 
-        let flickr = new Flickr(Flickr.OAuth.createPlugin(
-            config.FLICKR.CONSUMER_KEY,
-            config.FLICKR.CONSUMER_SECRET,
-            config.FLICKR.OAUTH_TOKEN,
-            config.FLICKR.OAUTH_TOKEN_SECRET,
-        ));
+        let flickr = new Flickr(
+            Flickr.OAuth.createPlugin(
+                config.FLICKR.CONSUMER_KEY,
+                config.FLICKR.CONSUMER_SECRET,
+                config.FLICKR.OAUTH_TOKEN,
+                config.FLICKR.OAUTH_TOKEN_SECRET
+            )
+        );
 
-        let result =  await flickr.photosets.create({
+        console.debug('DEBUG', 'Create album '+ name);
+
+        let result = await flickr.photosets.create({
             title: name,
-            description: 'Empty Text',
+            description: "Empty Text",
             primary_photo_id: images[0]
         });
 
         let albumId = result.body.photoset.id;
 
-        console.log('DEBUG', 'Adding photos to album ' + name + '...');
+        console.log("DEBUG", "Adding photos to album " + name + "...");
 
         for (const photo of images) {
             try {
                 await flickr.photosets.addPhoto({
                     photo_id: photo,
-                    photoset_id: albumId,
+                    photoset_id: albumId
                 });
-            } catch(error) {
-                console.log('ERROR', error);
+            } catch (error) {
+                console.log("ERROR", error);
             }
         }
-        console.log('DEBUG', 'Album complete');
+        console.log("DEBUG", "Album complete");
     }
 
     /**
@@ -70,17 +74,19 @@ module.exports = function(app) {
         let pics = browseFolder(folder, []);
         let uploadedPics = [];
 
-
-        console.debug('DEBUG', 'Upload Photos [' + pics.length + ']');
+        console.debug("DEBUG", "Upload Photos [" + pics.length + "]");
         for (const photo of pics) {
             let result = await uploadPhoto(photo);
             if (result) {
                 uploadedPics.push(result.body.photoid._content);
-                console.debug('DEBUG', 'Process..... ' + uploadedPics.length + '/' +pics.length);
+                console.debug(
+                    "DEBUG",
+                    "Process..... " + uploadedPics.length + "/" + pics.length
+                );
             }
         }
 
-        console.log('DEBUG', 'Upload complete');
+        console.log("DEBUG", "Upload complete");
 
         return uploadedPics;
     }
@@ -95,27 +101,27 @@ module.exports = function(app) {
             config.FLICKR.CONSUMER_KEY,
             config.FLICKR.CONSUMER_SECRET,
             config.FLICKR.OAUTH_TOKEN,
-            config.FLICKR.OAUTH_TOKEN_SECRET,
+            config.FLICKR.OAUTH_TOKEN_SECRET
         );
 
         let photoName;
         let photoToUpload;
 
-        if (photo instanceof String) {
+        if (typeof photo === "string") {
             photoToUpload = photo;
-            photoName = photo.replace(/^.*[\\\/]/, '')
+            photoName = photo.replace(/^.*[\\\/]/, "");
         } else {
             photoName = photo.name;
-            photoToUpload = photo.data.buffer
+            photoToUpload = photo;
         }
 
         try {
             return await new Flickr.Upload(auth, photoToUpload, {
                 title: photoName,
                 is_public: 0,
-                is_friend: 0,
-            })
-        } catch(error) {
+                is_friend: 0
+            });
+        } catch (error) {
             console.error(error);
             return null;
         }
@@ -133,9 +139,8 @@ module.exports = function(app) {
 
     async function uploadFromFiles(request) {
         let photos = await uploadFiles(request.files.image);
-        //createAlbum(photos, request.body.albumName);
+        createAlbum(photos, request.body.albumName);
     }
-
 
     /**
      * Upload recieved multipart files to Flickr account.
@@ -144,39 +149,51 @@ module.exports = function(app) {
      * @return The list of upload photos id.
      */
     async function uploadFiles(files) {
-        let uploadedPics = []
-        console.log(files);
-        console.debug('DEBUG', 'Upload Photos [' + files.length + ']');
-        for (const photo of files) {
-            console.log(photo.data);
+        let uploadedPics = [];
 
-            /* let result = await uploadPhoto(photo);
-            if (result) {
-                uploadedPics.push(result.body.photoid._content);
-                console.debug('DEBUG', 'Process..... ' + uploadedPics.length + '/' + files.length);
-            } */
+        console.debug("DEBUG", "Upload Photos [" + files.length + "]");
+        for (const photo of files) {
+            let movedPhoto = await photo.mv("./uploads/" + photo.name, async function moveFile(err) {
+                if (err) console.log(err);
+
+                let result = await uploadPhoto("./uploads/" + photo.name);
+                if (result) {
+                    uploadedPics.push(result.body.photoid._content);
+                    console.debug(
+                        "DEBUG",
+                        "Process..... " +
+                            uploadedPics.length +
+                            "/" +
+                            files.length
+                    );
+                }
+
+                fs.unlink("./uploads/" + photo.name, err => {
+                    if (err) console.log(err);
+                    console.log("./uploads/" + photo.name + " was deleted");
+                });
+            });
         }
 
-        console.log('DEBUG', 'Upload complete');
+        console.log("DEBUG", "Upload complete");
 
         return uploadedPics;
-
     }
 
     /**
      * Controller entry point to upload folder of photos
      */
-    app.get('/api/flickr/upload-folder', (req, res) => {
+    app.get("/api/flickr/upload-folder", (req, res) => {
         uploadFromFolder(req);
     });
 
     /**
      * Controller entry point to upload multiple photos
      */
-    app.post('/api/flickr/upload-photos', (req, res) => {
+    app.post("/api/flickr/upload-photos", (req, res) => {
         /**
          * TODO : implement call to flickr and function to upload via  a list of files (blob)
          */
         uploadFromFiles(req);
     });
-}
+};
