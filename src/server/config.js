@@ -4,6 +4,6 @@ module.exports = Object.freeze({
         CONSUMER_SECRET: '',
         OAUTH_TOKEN: '',
         OAUTH_TOKEN_SECRET: '',
-
+        USER_ID: '',
     },
 });
