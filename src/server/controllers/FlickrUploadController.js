@@ -153,25 +153,23 @@ module.exports = function(app) {
 
         console.debug("DEBUG", "Upload Photos [" + files.length + "]");
         for (const photo of files) {
-            let movedPhoto = await photo.mv("./uploads/" + photo.name, async function moveFile(err) {
+            await photo.mv("./uploads/" + photo.name);
+            console.log('DEBUG', 'photo moved to : ' + "./uploads/" + photo.name);
+            let result = await uploadPhoto("./uploads/" + photo.name);
+            if (result) {
+                uploadedPics.push(result.body.photoid._content);
+                console.debug(
+                    "DEBUG",
+                    "Process..... " +
+                        uploadedPics.length +
+                        "/" +
+                        files.length
+                );
+            }
+
+            fs.unlink("./uploads/" + photo.name, err => {
                 if (err) console.log(err);
-
-                let result = await uploadPhoto("./uploads/" + photo.name);
-                if (result) {
-                    uploadedPics.push(result.body.photoid._content);
-                    console.debug(
-                        "DEBUG",
-                        "Process..... " +
-                            uploadedPics.length +
-                            "/" +
-                            files.length
-                    );
-                }
-
-                fs.unlink("./uploads/" + photo.name, err => {
-                    if (err) console.log(err);
-                    console.log("./uploads/" + photo.name + " was deleted");
-                });
+                console.log("./uploads/" + photo.name + " was deleted");
             });
         }
 

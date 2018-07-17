@@ -6,7 +6,7 @@ export const uploadFiles = params => dispatch => {
         formData.append("image", image);
     }
 
-    formData.append("albumName", "TEST");
+    formData.append("albumName", params.albumName);
 
     window.axios
         .post("/api/flickr/upload-photos", formData, {

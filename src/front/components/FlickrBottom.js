@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import UploadButton from "./small-components/UploadButtons";
-import { connect } from 'react-redux';
-import * as actions from '../actions/flickr-upload';
+import { connect } from "react-redux";
+import * as actions from "../actions/flickr-upload";
 
 /**
  *
@@ -12,9 +12,14 @@ class FlickrBottom extends Component {
         super(props);
 
         this.state = {
+            albumName: "",
             files: []
         };
     }
+
+    handleAlbumNameChange = event => {
+        this.setState({ albumName: event.target.value });
+    };
 
     /**
      * Open the file selector dialog.
@@ -36,11 +41,12 @@ class FlickrBottom extends Component {
 
     uploadFolder = () => {
         let params = {
-            files: this.state.files,
-        }
+            albumName: this.state.albumName,
+            files: this.state.files
+        };
 
         this.props.uploadFiles(params);
-    }
+    };
 
     render = () => {
         return (
@@ -56,6 +62,10 @@ class FlickrBottom extends Component {
                         style={{ display: "none" }}
                     />
                     <UploadButton
+                        handleAlbumNameChange={this.handleAlbumNameChange.bind(
+                            this
+                        )}
+                        albumName={this.state.albumName}
                         uploadFolder={this.uploadFolder.bind(this)}
                         nbSelectedFiles={this.state.files.length}
                         isFolderSelected={this.state.files.length > 0}
@@ -68,9 +78,7 @@ class FlickrBottom extends Component {
 }
 
 function mapStateToProps(state) {
-    return {
-
-    };
+    return {};
 }
 
 export default connect(
