@@ -1,0 +1,108 @@
+///*------------------------------------*\
+//    #UPLOAD CARD
+//\*------------------------------------*/
+
+.upload-card {
+    min-width: 1200px;
+    padding: 32px;
+}
+
+    .upload-card__header {
+        text-align: center;
+        margin-bottom: 32px;
+        font-weight: 200;
+
+        .upload-card-header__primary {
+            font-weight: 400;
+            font-size: 32px;
+        }
+    }
+
+    .upload-card__content {
+        display: flex;
+
+        .upload-card-content__block {
+            position: relative;
+            width: 665px;
+            height: 500px;
+            border-radius: 4px;
+            background-color: #F3F3F3;
+        }
+    }
+
+
+
+
+
+
+.upload-card-content__block {
+    margin-right: 16px;
+}
+
+    .upload-card-content__block-content {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+
+        &.upload-content--full {
+            height: 100%;
+        }
+    }
+
+    .upload-card-content__block-logo {
+        margin: auto;
+        width: 120px;
+        margin-bottom: 48px;
+
+        img {
+            width: 120px;
+        }
+    }
+
+    .upload-card-content__block-info {
+        width: 250px;
+        margin: auto;
+        font-size: 24px;
+        text-transform: uppercase;
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+            color: black;
+        }
+    }
+
+
+
+
+
+.upload-card-content__info {
+    flex: 1;
+    margin-left: 16px;
+}
+
+    .upload-card-content-info__title {
+        width: 100%;
+        margin-bottom: 16px;
+        font-size: 24px;
+    }
+
+    .upload-card-info__files-info {
+
+        .file-info__files-counter {
+            float: left;
+            width: max-content;
+            border: solid 1px #3962AB;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #3962AB;
+        }
+
+        .file-info__files-download {
+            float: right;
+        }
+    }
+
+

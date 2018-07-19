@@ -1,0 +1,33 @@
+///*------------------------------------*\
+//    #FILE BLOCK
+//\*------------------------------------*/
+.file-block__wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-between;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.file-block {
+    position: relative;
+    height: 150px;
+    margin: 8px;
+
+    img {
+        height: 150px;
+    }
+
+    .file-block__fields {
+        position: absolute;
+        padding: 8px;
+        right: 0px;
+        left: 0px;
+        bottom: 0px;
+        background-color: #00000069;
+    }
+
+    .file-block__title {
+        color: white;
+    }
+}

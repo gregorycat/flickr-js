@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as actions from "../actions/flickr-upload";
 import FlickrCard from "./FlickrCard";
+
+import UploadCard from "./UploadCard";
 
 /**
  * TODO :
@@ -24,7 +24,7 @@ class AppContent extends Component {
     render() {
         return (
             <div className="content">
-                <FlickrCard />
+                <UploadCard/>
             </div>
         );
     }
