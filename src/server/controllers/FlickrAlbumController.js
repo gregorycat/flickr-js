@@ -19,25 +19,51 @@ module.exports = function(app) {
             result = await flickr.photosets.getList({
                 user_id: config.FLICKR.USER_ID
             });
-        } catch(error) {
-            console.error('ERROR', error);
+        } catch (error) {
+            console.error("ERROR", error);
         }
 
         if (result) {
+            console.log(result.body);
             albums = result.body.photosets.photoset;
+
+            let photoResult;
+
+            for (const album of albums) {
+                photoResult = await flickr.photos.getInfo({
+                    photo_id: album.primary
+                });
+
+                if (photoResult) {
+                    let photo = photoResult.body.photo;
+                    let primaryStaticUrl =
+                        "https://c1.staticflickr.com/" +
+                        photo.farm +
+                        "/" +
+                        photo.server +
+                        "/" +
+                        photo.id +
+                        "_" +
+                        photo.secret +
+                        "." +
+                        photo.originalformat;
+
+                    album.primaryStaticUrl = primaryStaticUrl;
+                }
+            }
         }
 
         if (res !== undefined) {
             res.send({
                 albums: albums
-            })
+            });
         }
     }
 
     /**
      * Controller entry point to upload folder of photos
      */
-    app.get('/api/flickr/list-album', (req, res) => {
+    app.get("/api/flickr/list-album", (req, res) => {
         listAlbums(res);
     });
 };

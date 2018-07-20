@@ -14,6 +14,7 @@ app.use(express.static(appDir));
 
 require('./controllers/FlickrLoginController')(app);
 require('./controllers/FlickrUploadController')(app);
+require('./controllers/FlickrAlbumController')(app);
 
 app.get('*', function(req, res) {
     res.sendfile(pathUtils.resolve(appDir, 'index.html'));

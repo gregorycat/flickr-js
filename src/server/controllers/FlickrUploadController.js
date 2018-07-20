@@ -1,25 +1,9 @@
 const config = require("../config");
 const Flickr = require("flickr-sdk");
 const fs = require("fs");
+const { fork } = require("child_process");
 
 module.exports = function(app) {
-    /**
-     * Browse a folder recursively to retrieve all files.
-     *
-     * @return The list of files in the folder and sub folders
-     */
-    function browseFolder(folder, photos) {
-        fs.readdirSync(folder).forEach(file => {
-            if (fs.statSync(folder + "/" + file).isDirectory()) {
-                browseFolder(folder + "/" + file, photos);
-            } else {
-                photos.push(folder + "/" + file);
-            }
-        });
-
-        return photos;
-    }
-
     /**
      * Create a photoset in Flicjr add add the photos
      *
@@ -40,7 +24,7 @@ module.exports = function(app) {
             )
         );
 
-        console.debug('DEBUG', 'Create album '+ name);
+        console.debug("DEBUG", "Create album " + name);
 
         let result = await flickr.photosets.create({
             title: name,
@@ -63,32 +47,6 @@ module.exports = function(app) {
             }
         }
         console.log("DEBUG", "Album complete");
-    }
-
-    /**
-     * Retrive the file in the fomder and upload them to Flickr
-     *
-     * @param {string} folder The path to folder to upload
-     */
-    async function uploadFolder(folder) {
-        let pics = browseFolder(folder, []);
-        let uploadedPics = [];
-
-        console.debug("DEBUG", "Upload Photos [" + pics.length + "]");
-        for (const photo of pics) {
-            let result = await uploadPhoto(photo);
-            if (result) {
-                uploadedPics.push(result.body.photoid._content);
-                console.debug(
-                    "DEBUG",
-                    "Process..... " + uploadedPics.length + "/" + pics.length
-                );
-            }
-        }
-
-        console.log("DEBUG", "Upload complete");
-
-        return uploadedPics;
     }
 
     /**
@@ -125,16 +83,6 @@ module.exports = function(app) {
             console.error(error);
             return null;
         }
-    }
-
-    /**
-     * Process the photos upload from selected folder and add them to the photoset.
-     *
-     * @param {Request} request The requested attributes
-     */
-    async function uploadFromFolder(request) {
-        let photos = await uploadFolder(request.dirName);
-        createAlbum(photos, request.albumName);
     }
 
     async function uploadFromFiles(request) {
@@ -179,19 +127,39 @@ module.exports = function(app) {
     }
 
     /**
-     * Controller entry point to upload folder of photos
-     */
-    app.get("/api/flickr/upload-folder", (req, res) => {
-        uploadFromFolder(req);
-    });
-
-    /**
      * Controller entry point to upload multiple photos
      */
     app.post("/api/flickr/upload-photos", (req, res) => {
-        /**
-         * TODO : implement call to flickr and function to upload via  a list of files (blob)
-         */
-        uploadFromFiles(req);
+        res.send({
+            status: "RECIEVED"
+        });
+
+        for (let photo of req.files.image) {
+            photo.mv("./uploads/" + photo.name);
+            console.log("DEBUG", "photo moved to : " + "./uploads/" + photo.name);
+        }
+
+        let request = {
+            files: req.files,
+            albumName: req.body.albumName
+        }
+
+        const process = fork('./src/server/upload.js');
+
+        process.send({request: request});
+
+        // listen for messages from forked process
+        process.on('message', (message) => {
+            console.log(`Number of mails sent ${message.nbPhotos}`);
+        });
+
+        //uploadFromFiles(req);
+    });
+
+    /**
+     * Controller entry point to retrieve the upload status
+     */
+    app.get("/api/flickr/get-upload-status", (req, res) => {
+        res.send({});
     });
 };
