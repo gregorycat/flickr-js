@@ -34,7 +34,7 @@ class UploadCard extends Component {
     };
 
     /**
-     * Uploadthe selected files to Flicjr
+     * Uploadthe selected files to Flickr
      */
     uploadFolder = () => {
         let params = {
@@ -47,6 +47,16 @@ class UploadCard extends Component {
         };
 
         this.props.uploadFiles(params);
+
+        // Start the get upload status interval
+        this.getStatusInterval = window.setInterval(() => {
+            if (this.props.uploadStatus !== undefined && this.props.uploadStatus.status === 'DONE') {
+                clearInterval(this.getStatusInterval);
+                return;
+            }
+            
+            this.props.getUploadStatus();
+        }, 5 * 1000)
     };
 
     render() {

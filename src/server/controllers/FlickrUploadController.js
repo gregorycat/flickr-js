@@ -5,6 +5,12 @@ const { fork } = require("child_process");
 
 module.exports = function(app) {
     /**
+     * Globals vars
+     */
+    let uploadedPhotos = [];
+    let sentPhotos;
+
+    /**
      * Create a photoset in Flicjr add add the photos
      *
      * @param {Array} images The list of photos id to add in the photoset
@@ -131,12 +137,15 @@ module.exports = function(app) {
      */
     app.post("/api/flickr/upload-photos", (req, res) => {
         res.send({
-            status: "RECIEVED"
+            status: "RECEIVED"
         });
+
+        uploadedPhotos = [];
+        sentPhotos = req.files.image.length;
 
         for (let photo of req.files.image) {
             photo.mv("./uploads/" + photo.name);
-            console.log("DEBUG", "photo moved to : " + "./uploads/" + photo.name);
+            console.log("DEBUG", "photo moved to : ./uploads/" + photo.name);
         }
 
         let request = {
@@ -148,9 +157,11 @@ module.exports = function(app) {
 
         process.send({request: request});
 
-        // listen for messages from forked process
-        process.on('message', (message) => {
-            console.log(`Number of mails sent ${message.nbPhotos}`);
+        // Listen for messages from upload process
+        process.on('message', message => {
+            if (message.uploadedPics) {
+                uploadedPhotos = message.uploadedPics;
+            }
         });
 
         //uploadFromFiles(req);
@@ -160,6 +171,15 @@ module.exports = function(app) {
      * Controller entry point to retrieve the upload status
      */
     app.get("/api/flickr/get-upload-status", (req, res) => {
-        res.send({});
+        let status = 'PROCESS';
+        if (uploadedPhotos !== undefined && sentPhotos === uploadedPhotos.length) {
+            status = 'DONE';
+        }
+
+        res.send({
+            status: status,
+            nbSentPhotos: sentPhotos,
+            uploadedPhotos: uploadedPhotos,
+        });
     });
 };

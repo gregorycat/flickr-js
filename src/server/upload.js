@@ -102,6 +102,10 @@ async function uploadFiles(files) {
                 "DEBUG",
                 "Process..... " + uploadedPics.length + "/" + files.length
             );
+
+            process.send({
+                uploadedPics: uploadedPics,
+            });
         }
 
         fs.unlink("./uploads/" + photo.name, err => {
@@ -126,8 +130,5 @@ async function uploadFromFiles(request) {
 process.on("message", async message => {
     console.log("MESSAGE", message.request.files.image[0]);
 
-    let photos = await uploadFromFiles(message.request);
-
-    // send response to master process
-    process.send({ nbPhotos: photos.length });
+    await uploadFromFiles(message.request);
 });
