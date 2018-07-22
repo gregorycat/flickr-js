@@ -43,6 +43,7 @@ async function createAlbum(images, name, id) {
 
     for (const photo of images) {
         try {
+            console.log("DEBUG", "Add photo " + photo + " to album " + albumId);
             await flickr.photosets.addPhoto({
                 photo_id: photo,
                 photoset_id: albumId
@@ -115,7 +116,7 @@ async function uploadFiles(files) {
             });
         }
 
-        fs.unlink(photo, err => {
+        await fs.unlink(photo, err => {
             if (err) console.log(err);
             console.log(photo + " was deleted");
         });

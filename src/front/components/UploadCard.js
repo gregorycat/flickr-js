@@ -127,7 +127,6 @@ class UploadCard extends Component {
             if (this.props.uploadStatus !== undefined && this.props.uploadStatus.status === 'DONE') {
                 clearInterval(this.getStatusInterval);
                 completePercent = undefined;
-                this.props.uploadStatus = {};
 
                 this.setState({
                     uploadStatus: completePercent,

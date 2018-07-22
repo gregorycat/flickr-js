@@ -35,14 +35,14 @@ class UploadHeader extends Component {
                     }
                 </div>
                 
-                {this.props.uploadStatus !== undefined && this.props.uploadStatus.percent ?
+                {this.props.uploadStatus !== undefined && this.props.uploadStatus.percent !== undefined ?
                     <div className="upload-card-header__upload-status">
                         <div className="upload-card-header__upload-detail">
                             Upload : {this.props.uploadStatus.nbUploaded} / {this.props.uploadStatus.nbSent} ({Math.round(this.props.uploadStatus.percent * 100) / 100}%)
                         </div>
                         <LinearProgress variant="determinate" value={this.props.uploadStatus.percent} />
                     </div>
-                : this.props.uploadStatus !== undefined && this.props.uploadStatus.percent ? 
+                : this.props.uploadStatus !== undefined && this.props.uploadStatus.percent === undefined? 
                     <div className="upload-card-header__upload-status">
                         <div className="upload-card-header__upload-detail">
                             Transfering files to server ...
