@@ -8,7 +8,7 @@ const fs = require("fs");
  * @param {Array} images The list of photos id to add in the photoset
  * @param {string} name  The name to give to the photoset
  */
-async function createAlbum(images, name) {
+async function createAlbum(images, name, id) {
     if (images.length === 0 && name === undefined) {
         return;
     }
@@ -22,15 +22,22 @@ async function createAlbum(images, name) {
         )
     );
 
-    console.debug("DEBUG", "Create album " + name);
+    let albumId;
 
-    let result = await flickr.photosets.create({
-        title: name,
-        description: "Empty Text",
-        primary_photo_id: images[0]
-    });
-
-    let albumId = result.body.photoset.id;
+    if (id === undefined) {
+        console.debug("DEBUG", "Create album " + name);
+    
+        let result = await flickr.photosets.create({
+            title: name,
+            description: "Created from API",
+            primary_photo_id: images[0]
+        });
+    
+        albumId = result.body.photoset.id;
+    } else {
+        console.debug("DEBUG", "Use album " + name + " (" + id + ")");
+        albumId = id;
+    }
 
     console.log("DEBUG", "Adding photos to album " + name + "...");
 
@@ -41,7 +48,7 @@ async function createAlbum(images, name) {
                 photoset_id: albumId
             });
         } catch (error) {
-            console.log("ERROR", error);
+            console.log("ERROR - ADD Photo to album");
         }
     }
     console.log("DEBUG", "Album complete");
@@ -78,7 +85,7 @@ async function uploadPhoto(photo) {
             is_friend: 0
         });
     } catch (error) {
-        console.error(error);
+        console.error('UPLOAD ERROR', error);
         return null;
     }
 }
@@ -95,7 +102,7 @@ async function uploadFiles(files) {
     console.debug("DEBUG", "Upload Photos [" + files.length + "]");
     for (const photo of files) {
         //await photo.mv("./uploads/" + photo.name);
-        let result = await uploadPhoto("./uploads/" + photo.name);
+        let result = await uploadPhoto(photo);
         if (result) {
             uploadedPics.push(result.body.photoid._content);
             console.debug(
@@ -108,11 +115,13 @@ async function uploadFiles(files) {
             });
         }
 
-        fs.unlink("./uploads/" + photo.name, err => {
+        fs.unlink(photo, err => {
             if (err) console.log(err);
-            console.log("./uploads/" + photo.name + " was deleted");
+            console.log(photo + " was deleted");
         });
     }
+
+    uploadedPics = [];
 
     console.log("DEBUG", "Upload complete");
 
@@ -120,15 +129,19 @@ async function uploadFiles(files) {
 }
 
 async function uploadFromFiles(request) {
-    let photos = await uploadFiles(request.files.image);
-    createAlbum(photos, request.albumName);
+    let photos = await uploadFiles(request.files);
+    createAlbum(photos, request.albumName, request.albumId);
+
+    process.send({
+        status: 'DONE',
+    });
 
     return photos;
 }
 
 // receive message from master process
 process.on("message", async message => {
-    console.log("MESSAGE", message.request.files.image[0]);
-
+    console.log("-------------------------------")
+    console.log("Message recieved by forked process");
     await uploadFromFiles(message.request);
 });

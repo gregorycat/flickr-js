@@ -14,11 +14,12 @@ const appDir = pathUtils.resolve(__dirname, '../../build');
 app.use(express.static(appDir));
 
 require('./controllers/FlickrLoginController')(app);
+require('./controllers/FlickrMiscController')(app);
 require('./controllers/FlickrUploadController')(app);
 require('./controllers/FlickrAlbumController')(app);
 
 app.get('*', function(req, res) {
-    res.sendfile(pathUtils.resolve(appDir, 'index.html'));
+    res.sendFile(pathUtils.resolve(appDir, 'index.html'));
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

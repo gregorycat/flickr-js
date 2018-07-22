@@ -3,19 +3,44 @@
 //\*------------------------------------*/
 
 .upload-card {
-    min-width: 1200px;
+    width: 1200px;
     padding: 32px;
 }
 
     .upload-card__header {
+        display: flex;
         text-align: center;
-        margin-bottom: 32px;
+        margin-bottom: 24px;
         font-weight: 200;
+
+        button {
+            height: 40px;
+            margin: auto;
+
+            svg {
+                margin: 0 4px;
+            }
+        }
+
+        .uplad-card-header__title {
+            flex: 1;
+        }
 
         .upload-card-header__primary {
             font-weight: 400;
             font-size: 32px;
         }
+    }
+
+    .upload-card-header__upload-status {
+        margin-bottom: 10px;
+    }
+
+    .upload-card-header__upload-detail {
+        font-size: 13px;
+        font-weight: 200;
+        text-align: right;
+        margin-bottom: 2px;
     }
 
     .upload-card__content {
@@ -88,6 +113,15 @@
         font-size: 24px;
     }
 
+    .upload-card-content-info__upload {
+        display: flex;
+        flex-direction: column;
+
+        .upload-card-info__upload-status {
+            margin-top: 24px;
+        }
+    }
+
     .upload-card-info__files-info {
 
         .file-info__files-counter {
@@ -104,5 +138,27 @@
             float: right;
         }
     }
+
+    .upload-card-info__photo-details {
+        display: flex;
+        margin-top: 54px;
+
+        .upload-photo-detail {
+            flex: 1;
+            width: 50%;
+        }
+
+        .upload-photo-detail__field {
+            font-size: 13px;
+            font-weight: 200;
+        }
+    }
+
+.upload-card__albums {
+    width: 100%;
+    height: 455px;
+}
+
+
 
 

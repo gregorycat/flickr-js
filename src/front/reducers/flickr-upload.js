@@ -9,7 +9,17 @@ export default (state = {}, action) => {
             return {
                 ...state,
                 uploadStatus: action.payload,
-        };
+            };
+        case 'PHOTO_COUNT':
+            return {
+                ...state,
+                photoCount: action.payload
+            };
+        case 'PROFILE': 
+            return {
+                ...state,
+                profile: action.payload,
+            };
         default:
             return state;
     }

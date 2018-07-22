@@ -24,7 +24,6 @@ module.exports = function(app) {
         }
 
         if (result) {
-            console.log(result.body);
             albums = result.body.photosets.photoset;
 
             let photoResult;
