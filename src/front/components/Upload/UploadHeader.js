@@ -10,7 +10,7 @@ class UploadHeader extends Component {
         return (
             <Fragment>
                 <div class="upload-card__header">
-                    { this.props.step === 2 ?  
+                    { this.props.step === 2 ?
                         <Button variant="outlined" color="primary" onClick={this.props.goBack}>
                             <ChevronLeft className="" />
                             Previous
@@ -18,12 +18,12 @@ class UploadHeader extends Component {
                         ""
                     }
                     <div className="uplad-card-header__title">
-                        <div>Upload your files</div>
+                        <div>{this.props.step === 1 ? 'Upload your files' : this.props.selectedFiles.length + ' photos to upload'}</div>
                         <div className="upload-card-header__primary">
-                            Choose a folder to upload
+                        {this.props.step === 1 ? 'Choose a folder to upload' : 'Choose your album'}
                         </div>
                     </div>
-                    { this.props.step === 1 ?  
+                    { this.props.step === 1 ?
                         <Button variant="outlined" color="primary" onClick={this.props.goNext}>
                             Next
                             <ChevronRight className="" />
@@ -34,7 +34,7 @@ class UploadHeader extends Component {
                         </Button>
                     }
                 </div>
-                
+
                 {this.props.uploadStatus !== undefined && this.props.uploadStatus.percent !== undefined ?
                     <div className="upload-card-header__upload-status">
                         <div className="upload-card-header__upload-detail">
@@ -42,7 +42,7 @@ class UploadHeader extends Component {
                         </div>
                         <LinearProgress variant="determinate" value={this.props.uploadStatus.percent} />
                     </div>
-                : this.props.uploadStatus !== undefined && this.props.uploadStatus.percent === undefined? 
+                : this.props.uploadStatus !== undefined && this.props.uploadStatus.percent === undefined?
                     <div className="upload-card-header__upload-status">
                         <div className="upload-card-header__upload-detail">
                             Transfering files to server ...

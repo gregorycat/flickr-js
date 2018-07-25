@@ -165,6 +165,7 @@ class UploadCard extends Component {
                         fileCount={this.state.files.length}
                         goBack={this.goBack.bind(this)}
                         goNext={this.goNext.bind(this)}
+                        selectedFiles={this.state.files}
                         step={this.state.step}
                         uploadFolder={this.uploadFolder.bind(this)}
                         uploadStatus={this.state.uploadStatus}
@@ -211,4 +212,7 @@ function mapStateToProps(state) {
     };
 }
 
-/* jaoWX22?^eljwVNUKA928?^ */
+export default connect(
+    mapStateToProps,
+    actions
+)(UploadCard);
