@@ -1,9 +1,24 @@
 export default (state = {}, action) => {
     switch (action.type) {
-        case 'TYPE':
+        case 'LIST_ALBUMS':
             return {
                 ...state,
-                isApiLoaded: action.payload,
+                albumList: action.payload,
+            };
+        case 'UPLOAD_STATUS':
+            return {
+                ...state,
+                uploadStatus: action.payload,
+            };
+        case 'PHOTO_COUNT':
+            return {
+                ...state,
+                photoCount: action.payload
+            };
+        case 'PROFILE': 
+            return {
+                ...state,
+                profile: action.payload,
             };
         default:
             return state;
