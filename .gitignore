@@ -9,8 +9,11 @@
 # production
 /build
 
-#config
+# config
 /src/server/config.js
+
+# uploads
+/uploads
 
 # misc
 .DS_Store
