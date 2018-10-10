@@ -7,8 +7,8 @@ class UploadZone extends Component {
         let fileBlock = [];
         let fileList = [];
 
-        for (let i=0; i<files.length; i++) {
-            fileBlock.push(<FileBlock file={files[i]}/>);
+        for (let i = 0; i < files.length; i++) {
+            fileBlock.push(<FileBlock file={files[i]} />);
         }
 
         fileList.push(<div className="file-block__wrapper">{fileBlock}</div>);

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "../../../assets/logo-upload.png";
 
 class FileBlock extends Component {
     constructor(props) {

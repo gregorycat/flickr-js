@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import FlickrCard from "./FlickrCard";
 
 import UploadCard from "./UploadCard";
 
