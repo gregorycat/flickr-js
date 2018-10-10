@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Button from "@material-ui/core/Button";
 import UploadButton from "./small-components/UploadButtons";
 import { connect } from "react-redux";
 import * as actions from "../actions/flickr-upload";
