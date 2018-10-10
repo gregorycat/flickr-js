@@ -3,6 +3,9 @@
 
 This app allow you to uplad photos from directory to your flickr account
 
+## Config
+Edit the configuration file `src/config.js` to define the datas needed to authenticate the user in Flickr
+
 ## Setup
 To install dependencies, just type :
 
