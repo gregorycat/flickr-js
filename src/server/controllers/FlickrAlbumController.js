@@ -29,6 +29,7 @@ module.exports = function(app) {
             let photoResult;
 
             for (const album of albums) {
+                //Retrieve the primary photo fo the album 
                 photoResult = await flickr.photos.getInfo({
                     photo_id: album.primary
                 });
