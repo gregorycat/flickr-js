@@ -33,14 +33,12 @@ class UploadInfo extends Component {
 
                 <div className="upload-card-content-info__upload">
                     {this.props.selectedFiles !== undefined &&
-                    this.props.selectedFiles.length > 0 ? (
+                    this.props.selectedFiles.length > 0 && (
                         <div className="upload-card-info__files-info">
                             <div className="file-info__files-counter">
                                 {this.props.selectedFiles.length} files to upload
                             </div>
                         </div>
-                    ) : (
-                        ""
                     )}
 
                     {this.props.uploadStatus !== undefined ?
