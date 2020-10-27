@@ -1,13 +1,13 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 class UploadButton extends Component {
     render = () => {
         return (
-            <Fragment>
+            <>
                 {this.props.isFolderSelected ? (
-                    <Fragment>
+                    <>
                         <Button
                             variant="contained"
                             onClick={this.props.uploadFolder}
@@ -22,7 +22,7 @@ class UploadButton extends Component {
                             margin="normal"
                         />
                         <h1>{this.props.nbSelectedFiles} files</h1>
-                    </Fragment>
+                    </>
                 ) : (
                     <Button
                         variant="contained"
@@ -31,7 +31,7 @@ class UploadButton extends Component {
                         Select a folder
                     </Button>
                 )}
-            </Fragment>
+            </>
         );
     };
 }
